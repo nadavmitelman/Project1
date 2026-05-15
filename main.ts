@@ -36,3 +36,10 @@ interface location {
     zipCode: number;
     streetAddress: string;
 }
+
+
+const jim= new user(100,"Jim",{zipCode: 33180,streetAddress: "123 test street"});
+console.log(jim.toString());
+
+const newUser=buildUser();
+console.log(newUser.toString());
