@@ -13,18 +13,38 @@ class user {
     id: number;
     name: string;
     address: location;
-
-    constructor(id:number, name:string, address:location){
+    access: permission;
+    constructor(id:number, name:string, address:location, access:permission){
         this.id=id;
         this.name=name;
         this.address=address;
+        this.access=access;
     }
     toString(): string{
         return ("User name is: " + this.name +"\nUser id is: " 
             +this.id +"\nUser address is: " 
-            +this.address.streetAddress +", " +
+            +this.address.streetAddress +" \n" +
             this.address.zipCode
         );
+    }
+    getAccessLevel(): number{
+        return this.access.level;
+    }
+    hasPermission(query:file): boolean{
+        let canAccess: boolean = false;
+        let hasPriv: boolean = true;
+        if(query.accessibleTo.priv){
+            hasPriv= this.access.priv;
+        } 
+        if(this.access.level>query.accessibleTo.level){
+            canAccess = true;
+        }
+        else if((this.access.level==query.accessibleTo.level) && ((this.access.department).toLowerCase()==query.accessibleTo.department.toLowerCase())){
+            canAccess = true;
+        }
+                
+        return canAccess && hasPriv;
+        
     }
 }
 
@@ -59,25 +79,30 @@ interface permission {
 }
 
 async function buildFile(): Promise<file> {
-  let req: permission = { level: 0, department: '', priv: false };
-  const name = await ask("Enter file's name: ");
-  req.level = parseInt(await ask("Enter minimum required access level: "));
-  req.department = await ask("What department is this file from? ");
-  req.priv = (await ask("Does this file require privileged access? (y/n): ")) == 'y';
-  const temp = new file(name, req);
-  console.log(name + " created");
-  return temp;
+    let req: permission = { level: 0, department: '', priv: false };
+    const name = await ask("Enter file's name: ");
+    req.level = parseInt(await ask("Enter minimum required access level: "));
+    req.department = await ask("What department is this file from? ");
+    req.priv = (await ask("Does this file require privileged access? (y/n): ")) == 'y';
+    const temp = new file(name, req);
+    console.log(name + " created");
+    return temp;
 }
 
 async function buildUser(): Promise<user> {
-    let address: location = {streetAddress:'', zipCode:0};
+    let address: location = { streetAddress: '', zipCode: 0 };
+    let access: permission = { level: 0, department: '', priv: false };
 
     const name = await ask("Enter user's name: ");
     const id = parseInt(await ask("Enter user id: "));
     address.streetAddress = await ask("Enter user street address: ");
     address.zipCode = parseInt(await ask("Enter user zip code: "));
+    access.level = parseInt(await ask("Enter user permission level: "));
+    access.department = (await ask("Enter user department: ")).toLowerCase();
+    const tempstring = (await ask("Is privileged user? (y/n): ")).toLowerCase();
+    access.priv = tempstring == 'y';
 
-    const temp = new user(id, name, address);
+    const temp = new user(id, name, address, access);
     console.log(name + " created");
     return temp;
 }
