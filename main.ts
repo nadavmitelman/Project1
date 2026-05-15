@@ -33,6 +33,42 @@ interface location {
     streetAddress: string;
 }
 
+class file {
+    fileName: string;
+    accessibleTo: permission;
+
+    constructor(fileName:string, accessibleTo:permission){
+        this.fileName=fileName.toLowerCase();
+        this.accessibleTo=accessibleTo;
+            
+    }
+    
+    toString():string{
+        let temp:string = '';
+        this.accessibleTo.priv ? temp="requires" : temp="does not require";
+        return(this.fileName+" has an access level of "+this.accessibleTo.level+
+        ", belongs to "+this.accessibleTo.department+", and  "+ temp +" privileged access");
+
+    }
+
+}
+interface permission {
+    level: number;
+    department: string;
+    priv: boolean;
+}
+
+async function buildFile(): Promise<file> {
+  let req: permission = { level: 0, department: '', priv: false };
+  const name = await ask("Enter file's name: ");
+  req.level = parseInt(await ask("Enter minimum required access level: "));
+  req.department = await ask("What department is this file from? ");
+  req.priv = (await ask("Does this file require privileged access? (y/n): ")) == 'y';
+  const temp = new file(name, req);
+  console.log(name + " created");
+  return temp;
+}
+
 async function buildUser(): Promise<user> {
     let address: location = {streetAddress:'', zipCode:0};
 
@@ -48,13 +84,7 @@ async function buildUser(): Promise<user> {
 
 
 async function main() {
-    const jim = new user(100, "Jim", {zipCode: 33180, streetAddress: "123 test street"});
-    console.log(jim.toString());
-
-    const newUser = await buildUser();
-    console.log(newUser.toString());
-
-    rl.close();
+    
 }
 
 main();
