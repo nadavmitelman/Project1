@@ -109,7 +109,27 @@ async function buildUser(): Promise<user> {
 
 
 async function main() {
-    
+    // testing here. un-comment to test cases.
+    // const jimAccess: permission = {level: 3, department: 'HR', priv: false};
+    // const jim= new user(100,"Jim",{zipCode: 33180,streetAddress: "123 test street"}, jimAccess);
+    // console.log(jim.toString());
+
+    // const thing=new file("name",{level:2,department:"HR",priv:false});
+    // const thing2=new file("name",{level:3,department:"hr",priv:false});
+    // const thing3=new file("name",{level:4,department:"HR",priv:false});
+    // const thing4 = await buildFile();
+
+    // const newUser = await buildUser();
+    // console.log(newUser.toString());
+
+    // console.log(jim.hasPermission(thing4));
+    // console.log(jim.hasPermission(thing2));
+    // console.log(jim.hasPermission(thing3));
+
+    // console.log((await newUser).hasPermission(thing));
+    // console.log((await newUser).hasPermission(thing2));
+    // console.log((await newUser).hasPermission(thing3));
+    rl.close();
 }
 
 main();
